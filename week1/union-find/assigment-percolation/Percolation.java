@@ -8,13 +8,17 @@ public class Percolation {
     private WeightedQuickUnionUF uf;
     private boolean[][] sites;
     private int openCount;
+    private int topCoord;
+    private int bottomCoord;
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
         this.n = n;
-        this.uf = new WeightedQuickUnionUF(n * n);
+        this.uf = new WeightedQuickUnionUF(n * n + 2); // + top + bottom
         this.sites = new boolean[n][n];
         this.openCount = 0;
+        this.topCoord = n * n;
+        this.bottomCoord = n * n + 1;
 
         for (int i = 0; i < n; ++i)
         for (int j = 0; j < n; ++j) {
@@ -33,6 +37,13 @@ public class Percolation {
             this.openCount += 1;
 
             int ufPos = coordsToUf(row, col);
+
+            if (row == 0) {
+                uf.union(ufPos, topCoord);
+            } else if (row == this.n - 1) {
+                uf.union(ufPos, bottomCoord);
+            }
+
             if (row > 0 && sites[row - 1][col]) uf.union(ufPos, coordsToUf(row - 1, col));
             if (row < this.n - 1 && sites[row + 1][col]) uf.union(ufPos, coordsToUf(row + 1, col));
             if (col > 0 && sites[row][col - 1]) uf.union(ufPos, coordsToUf(row, col - 1));
@@ -55,12 +66,10 @@ public class Percolation {
         row -= 1;
         col -= 1;
         int ufPos = coordsToUf(row, col);
+
         int rootA = uf.find(ufPos);
-        for (int i = 0; i < n; ++i) {
-            int rootB = uf.find(coordsToUf(0, i));
-            if (rootA == rootB) return true;
-        }
-        return false;
+        int rootB = uf.find(topCoord);
+        return rootA == rootB;
     }
 
     // returns the number of open sites
@@ -70,10 +79,14 @@ public class Percolation {
 
     // A full site is an open site that can be connected to an open site in the top row via a chain of neighboring (left, right, up, down) open sites.
     public boolean percolates() {
-        for (int i = 1; i <= n; ++i) {
-            if (isFull(this.n, i)) return true;
-        }
-        return false;
+
+        int rootA = uf.find(bottomCoord);
+        int rootB = uf.find(topCoord);
+        return rootA == rootB;
+        // for (int i = 1; i <= n; ++i) {
+        //     if (isFull(this.n, i)) return true;
+        // }
+        // return false;
     }
 
     private void validateXY(int row, int col) {
