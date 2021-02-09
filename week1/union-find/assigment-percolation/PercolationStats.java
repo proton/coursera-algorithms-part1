@@ -15,16 +15,16 @@ public class PercolationStats {
     }
 
     private void runTrials() {
-        for (int i = 0; i < this.t ; ++i) {
+        for (int i = 0; i < this.t; ++i) {
             Percolation percolation = new Percolation(n);
             double openSites = 0;
 
             while (!percolation.percolates()) {
-                int x = StdRandom.uniform(1, n + 1);
-                int y = StdRandom.uniform(1, n + 1);
+                int x = StdRandom.uniformInt(n);
+                int y = StdRandom.uniformInt(n);
                 if (!percolation.isOpen(y, x)) {
                     percolation.open(y, x);
-                    openSites++;
+                    ++openSites;
                 }
             }
             results[i] = openSites / (this.n * this.n);
@@ -68,7 +68,7 @@ public class PercolationStats {
         int n = Integer.parseInt(args[0]);
         int t = Integer.parseInt(args[1]);
 
-        PercolationStats ps = new PercolationStats(200, 1000);
+        PercolationStats ps = new PercolationStats(n, t);
         System.out.println("mean = " + ps.mean());
         System.out.println("stddev = " + ps.stddev());
         System.out.println("interval = " + ps.confidenceLo() + " " + ps.confidenceHi());
