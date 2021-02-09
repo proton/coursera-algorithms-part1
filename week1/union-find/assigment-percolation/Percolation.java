@@ -13,6 +13,10 @@ public class Percolation {
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException();
+        }
+
         this.n = n;
         this.uf = new WeightedQuickUnionUF(n * n + 2); // + top + bottom
         this.sites = new boolean[n][n];
@@ -40,7 +44,8 @@ public class Percolation {
 
             if (row == 0) {
                 uf.union(ufPos, topCoord);
-            } else if (row == this.n - 1) {
+            }
+            if (row == this.n - 1) {
                 uf.union(ufPos, bottomCoord);
             }
 
