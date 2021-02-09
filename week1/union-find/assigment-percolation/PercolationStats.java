@@ -6,6 +6,8 @@ public class PercolationStats {
     private int t;
     private double[] results;
 
+    private double CONFIDENCE = 1.96;
+
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int t) {
         this.n = n;
@@ -20,10 +22,11 @@ public class PercolationStats {
             double openSites = 0;
 
             while (!percolation.percolates()) {
-                int x = StdRandom.uniformInt(n);
-                int y = StdRandom.uniformInt(n);
-                if (!percolation.isOpen(y, x)) {
-                    percolation.open(y, x);
+                int x = 1 + StdRandom.uniformInt(n);
+                int y = 1 + StdRandom.uniformInt(n);
+
+                if (!percolation.isOpen(x, y)) {
+                    percolation.open(x, y);
                     ++openSites;
                 }
             }
@@ -52,7 +55,7 @@ public class PercolationStats {
      * @return double  low endpoint of 95% confidence interval
      */
     public double confidenceLo() {
-        return mean() - 1.96 * stddev() / Math.sqrt(this.t);
+        return mean() - CONFIDENCE * stddev() / Math.sqrt(this.t);
     }
 
     /**
@@ -60,7 +63,7 @@ public class PercolationStats {
      * @return double  high endpoint of 95% confidence interval
      */
     public double confidenceHi() {
-        return mean() + 1.96 * stddev() / Math.sqrt(this.t);
+        return mean() + CONFIDENCE * stddev() / Math.sqrt(this.t);
     }
 
     // test client (see below)
