@@ -2,14 +2,21 @@ import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
+    private static final double CONFIDENCE = 1.96;
+
     private int n;
     private int t;
     private double[] results;
 
-    private static final double CONFIDENCE = 1.96;
-
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int t) {
+        if (n <= 0) {
+            throw new IllegalArgumentException();
+        }
+        if (t <= 0) {
+            throw new IllegalArgumentException();
+        }
+
         this.n = n;
         this.t = t;
         this.results = new double[t];
