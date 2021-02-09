@@ -26,6 +26,8 @@ public class Percolation {
     public void open(int row, int col) {
         row -= 1;
         col -= 1;
+        validateXY(row, col);
+
         if (!sites[row][col]) {
             sites[row][col] = true;
             this.openCount += 1;
@@ -42,13 +44,8 @@ public class Percolation {
     public boolean isOpen(int row, int col) {
         row -= 1;
         col -= 1;
+        validateXY(row, col);
         return sites[row][col];
-    }
-
-    private void validateXY(int row, int col) {
-        if (row <= 0 || col <= 0 || row >= this.n || col >= this.n) {
-            throw new IllegalArgumentException();
-        }
     }
 
     // is the site (row, col) full?
@@ -77,6 +74,12 @@ public class Percolation {
             if (isFull(this.n, i)) return true;
         }
         return false;
+    }
+
+    private void validateXY(int row, int col) {
+        if (row < 0 || col < 0 || row >= this.n || col >= this.n) {
+            throw new IllegalArgumentException();
+        }
     }
 
     private int coordsToUf(int row, int col) {

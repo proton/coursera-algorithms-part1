@@ -6,7 +6,7 @@ public class PercolationStats {
     private int t;
     private double[] results;
 
-    private double CONFIDENCE = 1.96;
+    private static final double CONFIDENCE = 1.96;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int t) {
@@ -74,7 +74,7 @@ public class PercolationStats {
         PercolationStats ps = new PercolationStats(n, t);
         System.out.println("mean = " + ps.mean());
         System.out.println("stddev = " + ps.stddev());
-        System.out.println("interval = " + ps.confidenceLo() + " " + ps.confidenceHi());
+        System.out.println("95% confidence interval = [" + ps.confidenceLo() + ", " + ps.confidenceHi() + "]");
     }
 
 }
