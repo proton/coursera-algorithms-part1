@@ -3,3 +3,4 @@ build
 tmp
 zip.zip
 *.class
+.DS_Store
