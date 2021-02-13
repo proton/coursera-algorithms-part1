@@ -21,22 +21,22 @@ public class Deque<Item> implements Iterable<Item> {
 
     @Override
     public void remove() {
-        throw new UnsupportedOperationException();
+      throw new UnsupportedOperationException();
     }
 
     @Override
     public boolean hasNext() {
-        return current != null;
+      return current != null;
     }
 
     @Override
     public Item next() {
-        if (!hasNext()) throw new NoSuchElementException();
+      if (!hasNext()) throw new NoSuchElementException();
 
-        Item item = current.value;
-        current = current.nextNode;
+      Item item = current.value;
+      current = current.nextNode;
 
-        return item;
+      return item;
     }
   }
 
@@ -63,6 +63,7 @@ public class Deque<Item> implements Iterable<Item> {
   public void addFirst(Item item) {
     if (item == null) throw new IllegalArgumentException();
 
+    ++size;
     Node<Item> node = new Node<Item>(item);
     if (isEmpty()) {
       head = node;
@@ -78,6 +79,7 @@ public class Deque<Item> implements Iterable<Item> {
   public void addLast(Item item) {
     if (item == null) throw new IllegalArgumentException();
 
+    ++size;
     Node<Item> node = new Node<Item>(item);
     if (isEmpty()) {
       head = node;
@@ -93,6 +95,7 @@ public class Deque<Item> implements Iterable<Item> {
   public Item removeFirst() {
     if (isEmpty()) throw new NoSuchElementException();
 
+    --size;
     Node<Item> node = head;
     head = head.nextNode;
     if (head != null) {
@@ -106,6 +109,7 @@ public class Deque<Item> implements Iterable<Item> {
   public Item removeLast() {
     if (isEmpty()) throw new NoSuchElementException();
 
+    --size;
     Node<Item> node = tail;
     tail = head.prevNode;
     if (tail != null) {
