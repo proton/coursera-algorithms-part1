@@ -63,7 +63,6 @@ public class Deque<Item> implements Iterable<Item> {
   public void addFirst(Item item) {
     if (item == null) throw new IllegalArgumentException();
 
-    ++size;
     Node<Item> node = new Node<Item>(item);
     if (isEmpty()) {
       head = node;
@@ -73,13 +72,13 @@ public class Deque<Item> implements Iterable<Item> {
       head.prevNode = node;
       head = node;
     }
+    ++size;
   }
 
   // add the item to the back
   public void addLast(Item item) {
     if (item == null) throw new IllegalArgumentException();
 
-    ++size;
     Node<Item> node = new Node<Item>(item);
     if (isEmpty()) {
       head = node;
@@ -89,6 +88,7 @@ public class Deque<Item> implements Iterable<Item> {
       tail.nextNode = node;
       tail = node;
     }
+    ++size;
   }
 
   // remove and return the item from the front
@@ -100,6 +100,8 @@ public class Deque<Item> implements Iterable<Item> {
     head = head.nextNode;
     if (head != null) {
       head.prevNode = null;
+    } else {
+      tail = null;
     }
 
     return node.value;
@@ -114,6 +116,8 @@ public class Deque<Item> implements Iterable<Item> {
     tail = head.prevNode;
     if (tail != null) {
       tail.nextNode = null;
+    } else {
+      head = null;
     }
 
     return node.value;
@@ -126,6 +130,27 @@ public class Deque<Item> implements Iterable<Item> {
 
   // unit testing (required)
   public static void main(String[] args) {
-    //
+    Deque<Integer> deque = new Deque<Integer>();
+    assert deque.isEmpty() == true;
+    assert deque.size() == 0;
+
+    deque.addFirst(1);
+    deque.addFirst(2);
+    deque.addLast(3);
+    deque.addLast(4);
+
+    assert deque.size() == 4;
+
+    int[] array = new int[]{ 2,1,3,4 };
+    Iterator<Integer> it = deque.iterator();
+    for (int i = 0; i < array.length; ++i) {
+      assert it.hasNext() == true;
+      assert it.next() == array[i];
+    }
+    assert it.hasNext() == false;
+
+    assert deque.removeFirst() == 2;
+    assert deque.removeLast() == 4;
+    assert deque.size() == 2;
   }
 }

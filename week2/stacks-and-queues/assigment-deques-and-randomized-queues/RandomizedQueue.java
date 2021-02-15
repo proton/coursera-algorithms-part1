@@ -65,23 +65,24 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
       growArray();
     }
 
-    write(size, item);
     ++size;
+    write(size, item);
   }
 
   // remove and return a random item
   public Item dequeue() {
     if (isEmpty()) throw new NoSuchElementException();
 
+    // TODO: if index == 0 => ++left ?
 
     int index = StdRandom.uniformInt(size);
     Item item = at(index);
-    --size;
     for (int i = index; i < size; ++i) {
       write(i, at(i + 1));
     }
+    --size;
 
-    if (capacity >= size / 2) {
+    if (capacity / 2 > size) {
       shrinkArray();
     }
 
@@ -110,19 +111,19 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
   }
 
   private void growArray() {
-    int newSize = size == 0 ? 2 : size * 2;
+    int newSize = capacity == 0 ? 2 : capacity * 2;
     resizeArray(newSize);
   }
 
   private void shrinkArray() {
-    int newSize = size == 2 ? 0 : size / 2;
+    int newSize = capacity == 2 ? 0 : capacity / 2;
     resizeArray(newSize);
   }
 
   @SuppressWarnings("unchecked")
   private void resizeArray(int newSize) {
     Item[] newArray = (Item[]) new Object[newSize];
-    for(int i = 0; i < size; ++i) {
+    for (int i = 0; i < size; ++i) {
       newArray[i] = at(i);
     }
     left = 0;
