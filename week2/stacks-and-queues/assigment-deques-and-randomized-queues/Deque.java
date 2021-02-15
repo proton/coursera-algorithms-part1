@@ -131,7 +131,7 @@ public class Deque<Item> implements Iterable<Item> {
   // unit testing (required)
   public static void main(String[] args) {
     Deque<Integer> deque = new Deque<Integer>();
-    assert deque.isEmpty() == true;
+    assert deque.isEmpty();
     assert deque.size() == 0;
 
     deque.addFirst(1);
@@ -140,14 +140,15 @@ public class Deque<Item> implements Iterable<Item> {
     deque.addLast(4);
 
     assert deque.size() == 4;
+    assert !deque.isEmpty();
 
-    int[] array = new int[]{ 2,1,3,4 };
+    int[] array = new int[]{ 2, 1, 3, 4 };
     Iterator<Integer> it = deque.iterator();
     for (int i = 0; i < array.length; ++i) {
-      assert it.hasNext() == true;
+      assert it.hasNext();
       assert it.next() == array[i];
     }
-    assert it.hasNext() == false;
+    assert !it.hasNext();
 
     assert deque.removeFirst() == 2;
     assert deque.removeLast() == 4;
