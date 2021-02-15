@@ -8,8 +8,8 @@ public class Permutation {
     RandomizedQueue<String> queue = new RandomizedQueue<String>();
 
     while (!StdIn.isEmpty()) {
-      String s = StdIn.readString();
-      queue.enqueue(s);
+      String string = StdIn.readString();
+      queue.enqueue(string);
     }
 
     for (int i = 0; i < k; i++) {

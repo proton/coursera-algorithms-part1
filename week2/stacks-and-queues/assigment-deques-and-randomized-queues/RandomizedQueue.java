@@ -64,16 +64,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     if (capacity == size) {
       growArray();
     }
-
-    ++size;
     write(size, item);
+    ++size;
   }
 
   // remove and return a random item
   public Item dequeue() {
     if (isEmpty()) throw new NoSuchElementException();
-
-    // TODO: if index == 0 => ++left ?
 
     int index = StdRandom.uniformInt(size);
     Item item = at(index);
@@ -103,11 +100,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
   }
 
   private Item at(int index) {
-    return array[(left + index) % size];
+    // System.out.println("at "+ index + " " + left + );
+    return array[(left + index) % capacity];
   }
 
   private void write(int index, Item item) {
-    array[(left + index) % size] = item;
+    array[(left + index) % capacity] = item;
   }
 
   private void growArray() {
@@ -120,7 +118,6 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     resizeArray(newSize);
   }
 
-  @SuppressWarnings("unchecked")
   private void resizeArray(int newSize) {
     Item[] newArray = (Item[]) new Object[newSize];
     for (int i = 0; i < size; ++i) {
@@ -134,7 +131,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
   // unit testing (required)
   public static void main(String[] args) {
     RandomizedQueue<Integer> queue = new RandomizedQueue<Integer>();
-    assert queue.isEmpty() == true;
+    assert queue.isEmpty();
     assert queue.size() == 0;
 
     queue.enqueue(1);
@@ -146,10 +143,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     Iterator<Integer> it = queue.iterator();
     for (int i = 0; i < 4; ++i) {
-      assert it.hasNext() == true;
+      assert it.hasNext();
       it.next();
     }
-    assert it.hasNext() == false;
+    assert !it.hasNext();
 
     queue.dequeue();
     assert queue.size() == 3;
