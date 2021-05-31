@@ -10,20 +10,17 @@ class MyArray
   end
 
   def swap(i, j)
-    # p [:swap, i, j, "#{array[i]} <-> #{array[j]}"]
     @swap_cnt ||= 0
     @swap_cnt += 1
-    # raise 'Too many swap calls' if @swap_cnt > size
+    raise 'Too many swap calls' if @swap_cnt > size
 
     array[i], array[j] = array[j], array[i]
-    # self.print
   end
 
   def color(i)
-    #p [:color, i, array[i]]
     @color_cnt ||= 0
     @color_cnt += 1
-    #raise 'Too many color calls' if @color_cnt > size
+    raise 'Too many color calls' if @color_cnt > size * 2
 
     array[i]
   end
