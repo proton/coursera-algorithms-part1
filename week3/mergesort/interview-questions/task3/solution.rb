@@ -139,13 +139,6 @@ class LinkedList
   end
 end
 
-### Shuffling a linked list
-
-# Given a singly-linked list containing n items, rearrange the items uniformly at random. Your algorithm should consume a logarithmic (or constant) amount of extra memory and run in time proportional to n*log(n) in the worst case.
-
-n = 10
-l = LinkedList.new((0...n).to_a)
-
 def next_node(node, head)
   node.next_node ||= head
   node = node.next_node
@@ -165,11 +158,11 @@ def shuffle(l)
 
   node1 = head
   node2 = head
-  (l.length * lg).times do |i|
+  (l.length * 10).times do |i|
     # p [i, l.length * lg]
 
     # Swap nodes
-    unless node1 == node2
+    if rand < 0.5 && node1 != node2
       node11  = next_node(node1,  head)
       node111 = next_node(node11, head)
       node22  = next_node(node2,  head)
@@ -189,10 +182,17 @@ def shuffle(l)
       end
     end
 
-    node1 = next_node(node1, head) if rand < 0.5
-    node2 = next_node(next_node(node2, head), head) if rand < 0.5
+    node1 = next_node(node1, head)
+    node2 = next_node(next_node(node2, head), head)
   end
 end
+
+### Shuffling a linked list
+
+# Given a singly-linked list containing n items, rearrange the items uniformly at random. Your algorithm should consume a logarithmic (or constant) amount of extra memory and run in time proportional to n*log(n) in the worst case.
+
+n = 10000
+l = LinkedList.new((0...n).to_a)
 
 l0 = l.to_array
 
