@@ -66,12 +66,18 @@ def count_inversions_of_in(of_array, in_array)
 
   cnt = 0
 
-  # TODO: sort!!!!
+  of_array.sort!
+  in_array.sort!
 
-  of_array.each do |x|
-  in_array.each do |y|
-    cnt += 1 if x > y
-  end
+  i = of_array.size - 1
+  j = in_array.size - 1
+  while i >= 0 && j >= 0
+    if of_array[i] > in_array[j]
+      cnt += j + 1
+      i -= 1
+    else
+      j -= 1
+    end
   end
 
   cnt
@@ -91,7 +97,7 @@ else
   raise "#{x} != #{y}}"
 end
 
-ns = [100, 1000, 10000]
+ns = [100, 1000, 10000, 100000]
 
 as = ns.map do |n|
   a = n.times.map { rand(0..9999) }
