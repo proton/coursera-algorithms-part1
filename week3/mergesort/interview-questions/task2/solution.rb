@@ -15,15 +15,15 @@ def base_line_solution(array)
 end
 
 def solution(array)
-  count_inversions(array)
+  count_inversions(array, 0, array.size - 1)
 end
 
-def count_inversions(array)
-  return 0 if array.size <= 1
+def count_inversions(array, left, right)
+  return 0 if left >= right
 
   cnt = 0
 
-  n = array.size / 2
+  n = left + (right - left + 1) / 2
   pivot = array[n]
 
   sa1 = []
@@ -31,7 +31,7 @@ def count_inversions(array)
   sa3 = []
   sa4 = []
 
-  (0...n).each do |i|
+  (left...n).each do |i|
     x = array[i]
     if x <= pivot
       sa1 << x
@@ -40,7 +40,7 @@ def count_inversions(array)
     end
   end
 
-  ((n + 1)...(array.size)).each do |i|
+  ((n + 1)..right).each do |i|
     x = array[i]
     if x < pivot
       sa3 << x
@@ -52,8 +52,8 @@ def count_inversions(array)
   cnt += sa2.size
   cnt += sa3.size * (1 + sa2.size)
 
-  cnt += count_inversions(array[0...n])
-  cnt += count_inversions(array[(n + 1)...array.size])
+  cnt += count_inversions(array, left, n - 1)
+  cnt += count_inversions(array, n + 1, right)
 
   cnt += count_inversions_of_in(sa1, sa3)
   cnt += count_inversions_of_in(sa2, sa4)
