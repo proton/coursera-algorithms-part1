@@ -80,20 +80,6 @@
         return (this.y < that.y || (this.y == that.y && this.x < that.x)) ? -1 : 1;
      }
 
-    @Override
-    public boolean equals(Object another) {
-        if (this == another) {
-            return true;
-        }
-
-        if (another == null || getClass() != another.getClass()) {
-            return false;
-        }
-
-        Point other = (Point) another;
-        return x == other.x && y == other.y;
-    }
-
      /**
       * Compares two points by the slope they make with this point.
       * The slope is defined as in the slopeTo() method.

@@ -1,7 +1,5 @@
 // A faster, sorting-based solution. Remarkably, it is possible to solve the problem much faster than the brute-force solution described above. Given a point p, the following method determines whether p participates in a set of 4 or more collinear points.
 
-import java.util.HashSet;
-
 public class FastCollinearPoints {
   private Point[] points;
 
@@ -17,17 +15,11 @@ public class FastCollinearPoints {
       }
     }
 
-    HashSet<Point> pointSet = new HashSet<>();
+    this.points = points;
 
-    for (Point point : points) {
-      pointSet.add(point);
-    }
-
-    if (pointSet.size() != points.length) {
+    if (!this.arePointsUnique()) {
       throw new IllegalArgumentException("points argument to FastCollinearPoints constructor contains a repeated point");
     }
-
-    this.points = points;
   }
 
   // the number of line segments
@@ -40,5 +32,16 @@ public class FastCollinearPoints {
   // If 4 points appear on a line segment in the order p→q→r→s, then you should include either the line segment p→s or s→p (but not both) and you should not include subsegments such as p→r or q→r. For simplicity, we will not supply any input to FastCollinearPoints that has 5 or more collinear points.
   public LineSegment[] segments() {
     return null;
+  }
+
+  private boolean arePointsUnique() {
+    for (int i = 0;     i < this.points.length; ++i) {
+    for (int j = i + 1; j < this.points.length; ++j) {
+        if (this.points[i].compareTo(this.points[j]) == 0) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 }
