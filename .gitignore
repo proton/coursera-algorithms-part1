@@ -2,5 +2,6 @@
 build
 tmp
 zip.zip
+solution.zip
 *.class
 .DS_Store
