@@ -59,7 +59,7 @@
       * @return the slope between this point and the specified point
       */
      public double slopeTo(Point that) {
-        return (that.y - this.y) / (that.x - this.x);
+        return (that.y - this.y) / (double)(that.x - this.x);
      }
 
      /**

@@ -45,21 +45,20 @@ public class BruteCollinearPoints {
 
     this.segments = new LineSegment[0];
 
-    for (int i = 0;     i < this.points.length - 3; ++i) {
-    for (int j = i + 1; j < this.points.length - 2; ++j) {
-    for (int k = j + 1; k < this.points.length - 1; ++k) {
-    for (int l = k + 1; l < this.points.length;     ++l) {
-      Point pi = this.points[i];
-      Point pj = this.points[j];
-      Point pk = this.points[k];
-      Point pl = this.points[l];
+    for (int pi1 = 0;       pi1 < this.points.length - 3; ++pi1) {
+    for (int pi2 = pi1 + 1; pi2 < this.points.length - 2; ++pi2) {
+    for (int pi3 = pi2 + 1; pi3 < this.points.length - 1; ++pi3) {
+    for (int pi4 = pi3 + 1; pi4 < this.points.length;     ++pi4) {
+      Point p1 = this.points[pi1];
+      Point p2 = this.points[pi2];
+      Point p3 = this.points[pi3];
+      Point p4 = this.points[pi4];
 
-      if (this.pointsAreCollinear(pi, pj, pk, pl)) {
-        LineSegment segment = this.pointsToSegment(pi, pj, pk, pl);
+      if (this.pointsAreCollinear(p1, p2, p3, p4)) {
+        LineSegment segment = this.pointsToSegment(p1, p2, p3, p4);
         this.addSegment(segment);
       }
-    }}}}
-
+    } } } }
 
     return null;
   }
