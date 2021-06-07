@@ -60,7 +60,7 @@ public class BruteCollinearPoints {
       }
     } } } }
 
-    return null;
+    return this.segments;
   }
 
   private boolean pointsAreCollinear(Point p1, Point p2, Point p3, Point p4) {
