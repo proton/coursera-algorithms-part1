@@ -1,8 +1,15 @@
 // A faster, sorting-based solution. Remarkably, it is possible to solve the problem much faster than the brute-force solution described above. Given a point p, the following method determines whether p participates in a set of 4 or more collinear points.
+// - Think of p as the origin.
+// - For each other point q, determine the slope it makes with p.
+// - Sort the points according to the slopes they makes with p.
+// - Check if any 3 (or more) adjacent points in the sorted order have equal slopes with respect to p. If so, these points, together with p, are collinear.
+// - Applying this method for each of the n points in turn yields an efficient algorithm to the problem. The algorithm solves the problem because points that have equal slopes with respect to p are collinear, and sorting brings such points together. The algorithm is fast because the bottleneck operation is sorting.
 
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 public class FastCollinearPoints {
   private final Point[]       points;
@@ -52,34 +59,38 @@ public class FastCollinearPoints {
   private void calculateSegments() {
     this.segments = new LineSegment[0];
 
-    for (int pi1 = 0;       pi1 < this.points.length - 3; ++pi1) {
-    for (int pi2 = pi1 + 1; pi2 < this.points.length - 2; ++pi2) {
-    for (int pi3 = pi2 + 1; pi3 < this.points.length - 1; ++pi3) {
-    for (int pi4 = pi3 + 1; pi4 < this.points.length;     ++pi4) {
-      Point p1 = this.points[pi1];
-      Point p2 = this.points[pi2];
-      Point p3 = this.points[pi3];
-      Point p4 = this.points[pi4];
+    Point p0 = this.points[0];
 
-      if (this.pointsAreCollinear(p1, p2, p3, p4)) {
-        this.segments = Arrays.copyOf(this.segments, segments.length + 1);
-        this.segments[segments.length - 1] = this.pointsToSegment(p1, p2, p3, p4);
+    Arrays.sort(this.points, (p1, p2) -> Double.compare(p0.slopeTo(p1), p0.slopeTo(p2)));
+
+    int start  = 1;
+    int finish = 1;
+    double currentSlope = p0.slopeTo(this.points[0]);
+
+    for(int i = 1; i < this.points.length; ++i) {
+      double slope = p0.slopeTo(this.points[i]);
+
+      if (slope == currentSlope) {
+        finish = i;
       }
-    } } } }
 
-    this.segmentsCount = segments.length;
-  }
+      if (slope != currentSlope || i == this.points.length - 1) {
+        if (finish - start + 1 >= 4) {
+          List<Point> sub = Arrays.asList(this.points).subList(start, finish + 1);
+          Point pmin = Collections.min(sub);
+          Point pmax = Collections.max(sub);
 
-  private boolean pointsAreCollinear(Point p1, Point p2, Point p3, Point p4) {
-    return p1.slopeTo(p2) == p1.slopeTo(p3) && p1.slopeTo(p3) == p1.slopeTo(p4);
-  }
+          this.segments = Arrays.copyOf(this.segments, segments.length + 1);
+          this.segments[segments.length - 1] = new LineSegment(pmin, pmax);
+        }
 
-  private LineSegment pointsToSegment(Point p1, Point p2, Point p3, Point p4) {
-    List<Point> segmentPoints = Arrays.asList(p1, p2, p3, p4);
-    Point pmin = Collections.min(segmentPoints);
-    Point pmax = Collections.max(segmentPoints);
+        start = i;
+        finish = i;
+        currentSlope = slope;
+      }
+    }
 
-    return new LineSegment(pmin, pmax);
+    this.segmentsCount = this.segments.length;
   }
 
   private boolean arePointsUnique() {
