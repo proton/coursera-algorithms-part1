@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.Arrays;
 
 public class BruteCollinearPoints {
-  private Point[]       points;
-  private LineSegment[] segments;
+  private final Point[]       points;
+  private       LineSegment[] segments;
+  private       int           segmentsCount;
 
   // finds all line segments containing 4 points
   public BruteCollinearPoints(Point[] points) {
@@ -22,27 +23,35 @@ public class BruteCollinearPoints {
       }
     }
 
-    this.points   = points;
-    this.segments = null;
+    this.points = new Point[points.length];
+    for (int i = 0; i < points.length; i++) {
+      this.points[i] = points[i];
+    }
 
     if (!this.arePointsUnique()) {
       throw new IllegalArgumentException("points argument to FastCollinearPoints constructor contains a repeated point");
     }
+
+    this.calculateSegments();
   }
 
   // the number of line segments
   public int numberOfSegments() {
-    return this.segments().length;
+    return this.segmentsCount;
   }
 
   // the line segments
   // The method segments() should include each line segment containing 4 points exactly once.
-  // If 4 points appear on a line segment in the order p→q→r→s, then you should include either the line segment p→s or s→p (but not both) and you should not include subsegments such as p→r or q→r. For simplicity, we will not supply any input to BruteCollinearPoints that has 5 or more collinear points.
+  // If 4 points appear on a line segment in the order p→q→r→s, then you should include either the line segment p→s or s→p (but not both) and you should not include subsegments such as p→r or q→r. For simplicity, we will not supply any input to FastCollinearPoints that has 5 or more collinear points.
   public LineSegment[] segments() {
-    if (this.segments != null) {
-      return this.segments;
+    LineSegment[] copy = new LineSegment[this.segments.length];
+    for (int i = 0; i < this.segments.length; i++) {
+        copy[i] = this.segments[i]; // new LineSegment(segments[i].p, segments[i].q);
     }
+    return copy;
+  }
 
+  private void calculateSegments() {
     this.segments = new LineSegment[0];
 
     for (int pi1 = 0;       pi1 < this.points.length - 3; ++pi1) {
@@ -55,12 +64,12 @@ public class BruteCollinearPoints {
       Point p4 = this.points[pi4];
 
       if (this.pointsAreCollinear(p1, p2, p3, p4)) {
-        LineSegment segment = this.pointsToSegment(p1, p2, p3, p4);
-        this.addSegment(segment);
+        this.segments = Arrays.copyOf(this.segments, segments.length + 1);
+        this.segments[segments.length - 1] = this.pointsToSegment(p1, p2, p3, p4);
       }
     } } } }
 
-    return this.segments;
+    this.segmentsCount = segments.length;
   }
 
   private boolean pointsAreCollinear(Point p1, Point p2, Point p3, Point p4) {
@@ -68,16 +77,11 @@ public class BruteCollinearPoints {
   }
 
   private LineSegment pointsToSegment(Point p1, Point p2, Point p3, Point p4) {
-    List<Point> points = Arrays.asList(p1, p2, p3, p4);
-    Point pmin = Collections.min(points);
-    Point pmax = Collections.max(points);
+    List<Point> segmentPoints = Arrays.asList(p1, p2, p3, p4);
+    Point pmin = Collections.min(segmentPoints);
+    Point pmax = Collections.max(segmentPoints);
 
     return new LineSegment(pmin, pmax);
-  }
-
-  private void addSegment(LineSegment segment) {
-    this.segments = Arrays.copyOf(this.segments, segments.length + 1);
-    this.segments[segments.length - 1] = segment;
   }
 
   private boolean arePointsUnique() {
