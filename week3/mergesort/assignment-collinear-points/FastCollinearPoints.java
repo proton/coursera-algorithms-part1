@@ -5,11 +5,10 @@
 // - Check if any 3 (or more) adjacent points in the sorted order have equal slopes with respect to p. If so, these points, together with p, are collinear.
 // - Applying this method for each of the n points in turn yields an efficient algorithm to the problem. The algorithm solves the problem because points that have equal slopes with respect to p are collinear, and sorting brings such points together. The algorithm is fast because the bottleneck operation is sorting.
 
-import java.util.Collections;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.ArrayList;
 
 public class FastCollinearPoints {
   private final Point[]       points;
@@ -59,34 +58,43 @@ public class FastCollinearPoints {
   private void calculateSegments() {
     this.segments = new LineSegment[0];
 
-    Point p0 = this.points[0];
+    Point[] testPoints = new Point[this.points.length];
+    for (int i = 0; i < this.points.length; i++) {
+      testPoints[i] = this.points[i];
+    }
 
-    Arrays.sort(this.points, (p1, p2) -> Double.compare(p0.slopeTo(p1), p0.slopeTo(p2)));
+    for (int i = 0; i < this.points.length; ++i) {
+      Point p0 = this.points[i];
 
-    int start  = 1;
-    int finish = 1;
-    double currentSlope = p0.slopeTo(this.points[0]);
+      Arrays.sort(testPoints, (p1, p2) -> Double.compare(p0.slopeTo(p1), p0.slopeTo(p2)));
 
-    for(int i = 1; i < this.points.length; ++i) {
-      double slope = p0.slopeTo(this.points[i]);
+      int start  = 0;
+      int finish = 0;
+      double currentSlope = 0;
 
-      if (slope == currentSlope) {
-        finish = i;
-      }
+      for (int j = 0; j < testPoints.length; ++j) {
+        double slope = p0.slopeTo(testPoints[j]);
 
-      if (slope != currentSlope || i == this.points.length - 1) {
-        if (finish - start + 1 >= 4) {
-          List<Point> sub = Arrays.asList(this.points).subList(start, finish + 1);
-          Point pmin = Collections.min(sub);
-          Point pmax = Collections.max(sub);
-
-          this.segments = Arrays.copyOf(this.segments, segments.length + 1);
-          this.segments[segments.length - 1] = new LineSegment(pmin, pmax);
+        if (slope == currentSlope) {
+          finish = j;
         }
 
-        start = i;
-        finish = i;
-        currentSlope = slope;
+        if (slope != currentSlope || j == testPoints.length - 1) {
+          if (finish - start + 1 >= 3) { // 3 + p0
+            List<Point> sub = new ArrayList<>(Arrays.asList(testPoints).subList(start, finish + 1));
+            sub.add(p0);
+
+            Point pmin = Collections.min(sub);
+            Point pmax = Collections.max(sub);
+
+            this.segments = Arrays.copyOf(this.segments, segments.length + 1);
+            this.segments[segments.length - 1] = new LineSegment(pmin, pmax);
+          }
+
+          start  = j;
+          finish = j;
+          currentSlope = slope;
+        }
       }
     }
 
