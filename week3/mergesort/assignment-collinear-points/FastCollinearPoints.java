@@ -98,8 +98,6 @@ public class FastCollinearPoints {
 
             this.segments = Arrays.copyOf(this.segments, segments.length + 1);
             this.segments[segments.length - 1] = segment;
-
-            // TODO: remove duplicates!!!
           }
 
           start  = j;
