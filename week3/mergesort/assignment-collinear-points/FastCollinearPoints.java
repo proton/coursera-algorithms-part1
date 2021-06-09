@@ -63,6 +63,8 @@ public class FastCollinearPoints {
       testPoints[i] = this.points[i];
     }
 
+    ArrayList<String> usedSegments = new ArrayList<>();
+
     for (int i = 0; i < this.points.length; ++i) {
       Point p0 = this.points[i];
 
@@ -87,8 +89,17 @@ public class FastCollinearPoints {
             Point pmin = Collections.min(sub);
             Point pmax = Collections.max(sub);
 
+            LineSegment segment = new LineSegment(pmin, pmax);
+
+            if (usedSegments.contains(segment.toString())) {
+              continue;
+            }
+            usedSegments.add(segment.toString());
+
             this.segments = Arrays.copyOf(this.segments, segments.length + 1);
-            this.segments[segments.length - 1] = new LineSegment(pmin, pmax);
+            this.segments[segments.length - 1] = segment;
+
+            // TODO: remove duplicates!!!
           }
 
           start  = j;
