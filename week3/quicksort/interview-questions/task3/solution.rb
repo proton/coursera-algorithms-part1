@@ -53,8 +53,3 @@ count_dominants(a, 0, a.size - 1, d, result)
 p expected.sort!
 p result.sort!
 p expected == result
-
-
-# Hint: determine the `(n/10)^th` largest key using quickselect and check if it occurs more than `n/10` times.
-
-# Alternate solution hint: use 9 counters.
