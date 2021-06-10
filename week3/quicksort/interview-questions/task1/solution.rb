@@ -129,10 +129,19 @@ end
 
 n = 10
 
-bolt_pile = (0...n).map { |l| Bolt.new(l) }.shuffle
-nut_pile  = (0...n).map { |l| Nut.new(l)  }.shuffle
+def test(n)
+  bolt_pile = (0...n).map { |l| Bolt.new(l) }.shuffle
+  nut_pile  = (0...n).map { |l| Nut.new(l)  }.shuffle
+  sort(bolt_pile, nut_pile)
+  bolt_pile.zip(nut_pile).all? { |bolt, nut| bolt == nut }
+end
 
-p [bolt_pile, nut_pile]
-sort(bolt_pile, nut_pile)
-p [bolt_pile, nut_pile]
-p bolt_pile.zip(nut_pile).map { |bolt, nut| bolt == nut }.uniq
+require "benchmark"
+puts Benchmark.measure { "a"*1_000_000_000 }
+
+h = {}
+[100, 1000, 10000, 1000000].each do |n|
+  b = Benchmark.measure { raise unless test(n) }
+  h[n] = b.real
+end
+p h
