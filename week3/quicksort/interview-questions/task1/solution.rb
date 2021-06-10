@@ -1,82 +1,138 @@
-# def merge_sort(array, start: nil, finish: nil, buffer: nil)
-#   return if start == finish
+class Obj
+  attr_reader :size
 
-#   mid = (finish - start) / 2 + start
+  def initialize(size)
+    @size = size
+  end
 
-#   merge_sort(array, start: start,   finish: mid,    buffer: buffer)
-#   merge_sort(array, start: mid + 1, finish: finish, buffer: buffer)
+  def <(other)
+    (self <=> other) < 0
+  end
 
-#   i = 0
-#   j = 0
-#   b = 0
-#   loop do
-#     remaining = (j + mid + 1)..finish if i == mid + 1 - start
-#     remaining = (i + start)..mid      if j == finish - mid
-#     if remaining
-#       remaining.each do |k|
-#         buffer[b] = array[k]
-#         b += 1
-#       end
-#       break
-#     end
-#     x = array[i + start]
-#     y = array[j + mid + 1]
-#     if x < y
-#       buffer[b] = x
-#       i += 1
-#     else
-#       buffer[b] = y
-#       j += 1
-#     end
-#     b += 1
-#   end
-#   (0...b).each do |k|
-#     array[start + k] = buffer[k]
-#   end
+  def >(other)
+    (self <=> other) > 0
+  end
 
-#   array
-# end
+  def >=(other)
+    (self <=> other) >= 0
+  end
 
-# n = 10
-# a = n.times.map { rand(0..99) }.sort + n.times.map { rand(0..99) }.sort
-# b = Array.new(n)
+  def <=(other)
+    (self <=> other) <= 0
+  end
 
-# p a
+  def ==(other)
+    (self <=> other) == 0
+  end
 
-# k = 0
-# i = 0
-# j = n
+  def <=>(other)
+    raise "Can compare only nuts and bolts" unless comparable?(other)
+    size <=> other.size
+  end
 
-# while k < n do
-#   if a[i] <= a[j]
-#     b[k] = a[i]
-#     a[i] = nil
-#     i += 1
-#   else
-#     b[k] = a[j]
-#     a[j] = nil
-#     j += 1
-#   end
-#   k += 1
-# end
+  def comparable?(other)
+    other.is_a?(other_class)
+  end
 
-# i = 2 * n - 1
-# k = 2 * n - 1
-# while k >= n do
-#   if a[i]
-#     a[k] = a[i] unless k == i
-#     k -= 1
-#   end
-#   i -= 1
-# end
+  def inspect
+    "#{self.class.to_s[0]}#{size}"
+  end
+end
 
-# b.each_with_index do |e, i|
-#   a[i] = e
-# end
+class Nut < Obj
+  def other_class
+    Bolt
+  end
+end
 
-# merge_sort(a, start: n, finish: 2*n - 1, buffer: b)
+class Bolt < Obj
+  def other_class
+    Nut
+  end
+end
 
-# p b
-# p a
-# p a.sort
-# p a == a.sort
+def sort(array1, array2, start: nil, finish: nil)
+  start  ||= 0
+  finish ||= array1.size - 1
+
+  return if start >= finish
+
+  divider1 = array1[(finish - start) / 2 + start]
+  divider2 = nil
+
+  # p divider1.size
+
+  # p [start, finish, divider1, divider2]
+
+  # p array1
+  # p array2
+  # p "==="
+
+  left  = start
+  right = finish
+  while left <= right
+    left  += 1 while array2[left]  < divider1
+    right -= 1 while array2[right] > divider1
+
+    unless divider2
+      divider2 = array2[left]  if array2[left]  == divider1
+      divider2 = array2[right] if array2[right] == divider1
+    end
+
+    if left <= right
+      # p [left, right, array2[left], array2[right]]
+      array2[left], array2[right] = array2[right], array2[left]
+      left  += 1
+      right -= 1
+    end
+  end
+  left1  = left
+  right1 = right
+
+  # p array1[start..finish]
+  # p array2[start..finish]
+  # p [left, right]
+  # p array2[left]
+  # p [array2[start..right], divider1, array2[left..finish], :!, start, right, left, finish]
+
+  # p [start, finish, divider1, divider2, array1, array2]
+
+  left  = start
+  right = finish
+  while left <= right
+    left  += 1 while array1[left]  < divider2
+    right -= 1 while array1[right] > divider2
+
+    if left <= right
+      array1[left], array1[right] = array1[right], array1[left]
+      left  += 1
+      right -= 1
+    end
+  end
+  left2  = left
+  right2 = right
+
+  # p [array1[start..right], divider2, array1[left..finish], :!, start, right, left, finish]
+  # p array1[start..finish]
+  # p array2[start..finish]
+  # p [left, right]
+  # p array1[left]
+
+  # return if start == finish - 1
+
+  right = [right1, right2].max
+  left  = [left1,  left2 ].min
+
+  sort(array1, array2, start: start, finish: right)
+  sort(array1, array2, start: left,  finish: finish)
+end
+
+n = 10
+
+bolt_pile = (0...n).map { |l| Bolt.new(l) }.shuffle
+nut_pile  = (0...n).map { |l| Nut.new(l)  }.shuffle
+
+p [bolt_pile, nut_pile]
+sort(bolt_pile, nut_pile)
+p [bolt_pile, nut_pile]
+p bolt_pile.zip(nut_pile).map { |bolt, nut| bolt == nut }.uniq
