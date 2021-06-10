@@ -60,71 +60,43 @@ def sort(array1, array2, start: nil, finish: nil)
   divider1 = array1[(finish - start) / 2 + start]
   divider2 = nil
 
-  # p divider1.size
-
-  # p [start, finish, divider1, divider2]
-
-  # p array1
-  # p array2
-  # p "==="
-
   left  = start
   right = finish
-  while left <= right
-    left  += 1 while array2[left]  < divider1
-    right -= 1 while array2[right] > divider1
-
-    unless divider2
-      divider2 = array2[left]  if array2[left]  == divider1
-      divider2 = array2[right] if array2[right] == divider1
-    end
-
-    if left <= right
-      # p [left, right, array2[left], array2[right]]
-      array2[left], array2[right] = array2[right], array2[left]
-      left  += 1
+  i     = start
+  while i <= right
+    case array2[i] <=> divider1
+    when -1
+      array2[i], array2[left] = array2[left], array2[i]
+      i    += 1
+      left += 1
+    when 0
+      divider2 = array2[i]
+      i += 1
+    when 1
+      array2[i], array2[right] = array2[right], array2[i]
       right -= 1
     end
   end
-  left1  = left
-  right1 = right
-
-  # p array1[start..finish]
-  # p array2[start..finish]
-  # p [left, right]
-  # p array2[left]
-  # p [array2[start..right], divider1, array2[left..finish], :!, start, right, left, finish]
-
-  # p [start, finish, divider1, divider2, array1, array2]
 
   left  = start
   right = finish
-  while left <= right
-    left  += 1 while array1[left]  < divider2
-    right -= 1 while array1[right] > divider2
-
-    if left <= right
-      array1[left], array1[right] = array1[right], array1[left]
-      left  += 1
+  i     = start
+  while i <= right
+    case array1[i] <=> divider2
+    when -1
+      array1[i], array1[left] = array1[left], array1[i]
+      i    += 1
+      left += 1
+    when 0
+      i += 1
+    when 1
+      array1[i], array1[right] = array1[right], array1[i]
       right -= 1
     end
   end
-  left2  = left
-  right2 = right
 
-  # p [array1[start..right], divider2, array1[left..finish], :!, start, right, left, finish]
-  # p array1[start..finish]
-  # p array2[start..finish]
-  # p [left, right]
-  # p array1[left]
-
-  # return if start == finish - 1
-
-  right = [right1, right2].max
-  left  = [left1,  left2 ].min
-
-  sort(array1, array2, start: start, finish: right)
-  sort(array1, array2, start: left,  finish: finish)
+  sort(array1, array2, start: start,    finish: left - 1)
+  sort(array1, array2, start: left + 1, finish: finish  )
 end
 
 n = 10
@@ -133,15 +105,24 @@ def test(n)
   bolt_pile = (0...n).map { |l| Bolt.new(l) }.shuffle
   nut_pile  = (0...n).map { |l| Nut.new(l)  }.shuffle
   sort(bolt_pile, nut_pile)
-  bolt_pile.zip(nut_pile).all? { |bolt, nut| bolt == nut }
+
+  unless bolt_pile.zip(nut_pile).all? { |bolt, nut| bolt == nut }
+    p bolt_pile
+    p nut_pile
+    raise "Not sorted"
+  end
 end
 
 require "benchmark"
-puts Benchmark.measure { "a"*1_000_000_000 }
 
 h = {}
-[100, 1000, 10000, 1000000].each do |n|
-  b = Benchmark.measure { raise unless test(n) }
-  h[n] = b.real
+[100, 1000, 10000, 100000].each do |n|
+  h[n] = 10.times.map { Benchmark.measure { test(n) }.real }.sum / 10
 end
-p h
+
+min_k = h.keys.min
+min_v = h.values.min
+
+h.each do |k, v|
+  puts "#{k / min_k}:\t#{(v / min_v).round(2)}"
+end
