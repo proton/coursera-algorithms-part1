@@ -5,20 +5,13 @@ class Heap
     @arr = values.dup
 
     (arr.size / 2 - 1).downto(0).each do |i|
-      heapify!(i)
+      heapify_down(i)
     end
   end
 
   def push(value)
-    i = arr.size
     arr << value
-    parent_i = (i - 1) / 2
-
-    while i > 0 && arr[parent_i] < arr[i]
-      swap(i, parent_i)
-      i = parent_i
-      parent_i = (i - 1) / 2
-    end
+    heapify_up(arr.size - 1)
   end
 
   def max
@@ -30,7 +23,7 @@ class Heap
     last  = arr.pop
     unless arr.empty?
       arr[0] = last
-      heapify!(0)
+      heapify_down(0)
     end
     value
   end
@@ -45,20 +38,18 @@ class Heap
 
   # logarithmic time
   def delRandom
-    i = rand(arr.size)
-    x = arr[i]
+    index = rand(arr.size)
+    x = arr[index]
 
-    swap(i, arr.size - 1)
+    swap(index, arr.size - 1)
     arr.pop
 
-    (0...arr.size).each do |k|
-      heapify!(k)
-    end
-    (0...arr.size).each do |k|
-      heapify!(k)
-    end
-    (0...arr.size).each do |k|
-      heapify!(k)
+    unless index == arr.size
+      if index == 0 || arr[index] <= arr[parent_index(index)]
+        heapify_down(index)
+      else
+        heapify_up(index)
+      end
     end
 
     x
@@ -66,42 +57,69 @@ class Heap
 
   def valid_heap?
     return true if arr.empty?
-    (0..(arr.size / 2 - 1)).each do |parent_idx|
-      left_child_idx  = 2 * parent_idx + 1
-      right_child_idx = 2 * parent_idx + 2
-      return false if left_child_idx  < arr.size && arr[left_child_idx]  > arr[parent_idx]
-      return false if right_child_idx < arr.size && arr[right_child_idx] > arr[parent_idx]
+    (0..(arr.size / 2 - 1)).each do |parent_i|
+      left_i  = left_index(parent_i)
+      right_i = right_index(parent_i)
+      return false if left_i  < arr.size && arr[left_i]  > arr[parent_i]
+      return false if right_i < arr.size && arr[right_i] > arr[parent_i]
     end
     true
   end
 
-  private def heapify!(i)
-    loop do
-      left_child  = 2 * i + 1
-      right_child = 2 * i + 2
-      largest_child = i
+  private def heapify_up(index)
+    parent_i = parent_index(index)
 
-      largest_child = left_child  if left_child  < arr.size && arr[left_child]  > arr[largest_child]
-      largest_child = right_child if right_child < arr.size && arr[right_child] > arr[largest_child]
+    return if index == 0 || @arr[index] <= @arr[parent_i]
 
-      break if largest_child == i
+    swap(index, parent_i)
+    heapify_up(parent_i)
+  end
 
-      swap(i, largest_child)
-      i = largest_child
-    end
+  private def heapify_down(index)
+    left_i  = left_index(index)
+    right_i = right_index(index)
+    largest_child = index
+
+    largest_child = left_i  if left_i  < arr.size && arr[left_i]  > arr[largest_child]
+    largest_child = right_i if right_i < arr.size && arr[right_i] > arr[largest_child]
+
+    return if largest_child == index
+
+    swap(index, largest_child)
+    heapify_down(largest_child)
+  end
+
+  private def parent_index(index)
+    (index - 1) / 2
+  end
+
+  def left_index(index)
+    2 * index + 1
+  end
+
+  def right_index(index)
+    2 * index + 2
   end
 
   private def swap(i, j)
+    return if i == j
     arr[i], arr[j] = arr[j], arr[i]
   end
 end
 
-n = rand(3..9)
-a = Array.new(n) { rand(1..99) }.uniq
+100.times do
+  n = rand(3..9)
+  a = Array.new(n) { rand(1..99) }.uniq
 
-h1 = Heap.new(a)
-x  = h1.delRandom
-b  = a - [x]
-h2 = Heap.new(b)
+  h1 = Heap.new(a)
+  x  = h1.delRandom
+  b  = a - [x]
+  h2 = Heap.new(b)
 
-p h1.arr.sort == h2.arr.sort && h1.valid_heap? && h2.valid_heap?
+  unless h1.arr.sort == h2.arr.sort && h1.valid_heap? && h2.valid_heap?
+    puts "ERROR: h1 = #{h1.arr}, h2 = #{h2.arr} | #{h1.valid_heap?} #{h2.valid_heap?}"
+    exit
+  end
+end
+
+puts "OK"
