@@ -22,6 +22,7 @@ def solution(n)
   numbers = (1...n).map { |i| i**3 }
 
   # n^2
+  # Instead of using a hash, we could use an array to store the sums.
   h = {}
   numbers.each_with_index do |a, i|
   ((i + 1)...(n - 1)).each do |j|
