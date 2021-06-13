@@ -33,8 +33,9 @@ public class Solver {
     int n = in.readInt();
     int[][] tiles = new int[n][n];
     for (int i = 0; i < n; i++)
-        for (int j = 0; j < n; j++)
-            tiles[i][j] = in.readInt();
+    for (int j = 0; j < n; j++) {
+      tiles[i][j] = in.readInt();
+    }
 
     Board initial = new Board(tiles);
 

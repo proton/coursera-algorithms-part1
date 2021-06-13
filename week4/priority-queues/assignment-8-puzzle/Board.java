@@ -1,3 +1,5 @@
+import edu.princeton.cs.algs4.StdOut;
+
 public class Board {
   int[][] tiles;
 
@@ -9,7 +11,18 @@ public class Board {
 
   // string representation of this board
   public String toString() {
-    return "";
+    String s = new String();
+
+    s = s.concat(dimension() + "\n");
+
+    for (int i = 0; i < dimension(); i++) {
+      for (int j = 0; j < dimension(); j++) {
+        s = s.concat(" " + tiles[i][j]);
+      }
+      s = s.concat("\n");
+    }
+
+    return s;
   }
 
   // board dimension n
