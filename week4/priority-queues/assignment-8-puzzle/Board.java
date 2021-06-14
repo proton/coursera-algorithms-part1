@@ -1,12 +1,19 @@
 import edu.princeton.cs.algs4.StdOut;
 
 public class Board {
-  int[][] tiles;
+  private int n;
+  public int[][] tiles;
 
   // create a board from an n-by-n array of tiles,
   // where tiles[row][col] = tile at (row, col)
   public Board(int[][] tiles) {
     this.tiles = tiles;
+    this.n = tiles.length;
+
+    // this.goal = new int[n][n];
+    // for(int z = 0; z < n * n - 1; ++z) {
+    //   goal[z / n][z % n] = z + 1;
+    // }
   }
 
   // string representation of this board
@@ -27,27 +34,66 @@ public class Board {
 
   // board dimension n
   public int dimension() {
-    return tiles.length;
+    return n;
   }
 
   // number of tiles out of place
   public int hamming() {
-    return 0;
+    int cnt = 0;
+    for (int i = 0; i < dimension(); ++i) {
+    for (int j = 0; j < dimension(); ++j) {
+      if (tiles[i][j] != goalAt(i, j)) {
+        cnt++;
+      }
+    } }
+    return cnt;
   }
 
   // sum of Manhattan distances between tiles and goal
   public int manhattan() {
-    return 0;
+    int cnt = 0;
+    for (int i = 0; i < dimension(); ++i) {
+    for (int j = 0; j < dimension(); ++j) {
+      int v = tiles[i][j];
+      v = v == 0 ? n * n : v;
+      int x = (v - 1) / n;
+      int y = (v - 1) % n;
+
+      int xd = Math.abs(x - j);
+      int xy = Math.abs(y - i);
+
+      cnt += xd + xy;
+    } }
+    return cnt;
   }
 
   // is this board the goal board?
   public boolean isGoal() {
-    return false;
+    for (int i = 0; i < dimension(); ++i) {
+    for (int j = 0; j < dimension(); ++j) {
+      if (tiles[i][j] != goalAt(i, j)) {
+        return false;
+      }
+    } }
+    return true;
   }
 
   // does this board equal y?
   public boolean equals(Object y) {
-    return false;
+    if (y == this) return true;
+    if (y == null) return false;
+    if (getClass() != y.getClass()) return false;
+
+    Board other = (Board) y;
+    if (dimension() != other.dimension()) return false;
+
+    for (int i = 0; i < dimension(); ++i) {
+    for (int j = 0; j < dimension(); ++j) {
+      if (tiles[i][j] != other.tiles[i][j]) {
+        return false;
+      }
+    } }
+    return true;
   }
 
   // all neighboring boards
@@ -63,5 +109,9 @@ public class Board {
   // unit testing (not graded)
   public static void main(String[] args) {
     //
+  }
+
+  private int goalAt(int i, int j) {
+    return i * n + j + 1;
   }
 }
