@@ -1,19 +1,16 @@
-import edu.princeton.cs.algs4.StdOut;
-
 public class Board {
   private int n;
-  public int[][] tiles;
+  private int[][] tiles;
 
   // create a board from an n-by-n array of tiles,
   // where tiles[row][col] = tile at (row, col)
   public Board(int[][] tiles) {
-    this.tiles = tiles;
     this.n = tiles.length;
-
-    // this.goal = new int[n][n];
-    // for(int z = 0; z < n * n - 1; ++z) {
-    //   goal[z / n][z % n] = z + 1;
-    // }
+    this.tiles = new int[n][n];
+    for (int i = 0; i < n; ++i)
+    for (int j = 0; j < n; ++j) {
+      this.tiles[i][j] = tiles[i][j];
+    }
   }
 
   // string representation of this board
@@ -40,19 +37,19 @@ public class Board {
   // number of tiles out of place
   public int hamming() {
     int cnt = 0;
-    for (int i = 0; i < dimension(); ++i) {
+    for (int i = 0; i < dimension(); ++i)
     for (int j = 0; j < dimension(); ++j) {
       if (tiles[i][j] != goalAt(i, j)) {
         cnt++;
       }
-    } }
+    }
     return cnt;
   }
 
   // sum of Manhattan distances between tiles and goal
   public int manhattan() {
     int cnt = 0;
-    for (int i = 0; i < dimension(); ++i) {
+    for (int i = 0; i < dimension(); ++i)
     for (int j = 0; j < dimension(); ++j) {
       int v = tiles[i][j];
       v = v == 0 ? n * n : v;
@@ -63,18 +60,18 @@ public class Board {
       int xy = Math.abs(y - i);
 
       cnt += xd + xy;
-    } }
+    }
     return cnt;
   }
 
   // is this board the goal board?
   public boolean isGoal() {
-    for (int i = 0; i < dimension(); ++i) {
+    for (int i = 0; i < dimension(); ++i)
     for (int j = 0; j < dimension(); ++j) {
       if (tiles[i][j] != goalAt(i, j)) {
         return false;
       }
-    } }
+    }
     return true;
   }
 
@@ -87,13 +84,15 @@ public class Board {
     Board other = (Board) y;
     if (dimension() != other.dimension()) return false;
 
-    for (int i = 0; i < dimension(); ++i) {
-    for (int j = 0; j < dimension(); ++j) {
-      if (tiles[i][j] != other.tiles[i][j]) {
-        return false;
-      }
-    } }
     return true;
+
+    // for (int i = 0; i < dimension(); ++i) {
+    // for (int j = 0; j < dimension(); ++j) {
+    //   if (tiles[i][j] != other.tiles[i][j]) {
+    //     return false;
+    //   }
+    // } }
+    // return true;
   }
 
   // all neighboring boards
