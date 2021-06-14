@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Board {
   private int n;
   private int[][] tiles;
@@ -15,7 +17,7 @@ public class Board {
 
   // string representation of this board
   public String toString() {
-    String s = new String();
+    String s = "";
 
     s = s.concat(dimension() + "\n");
 
@@ -56,8 +58,8 @@ public class Board {
       int x = (v - 1) / n;
       int y = (v - 1) % n;
 
-      int xd = Math.abs(x - j);
-      int xy = Math.abs(y - i);
+      int xd = Math.abs(x - i);
+      int xy = Math.abs(y - j);
 
       cnt += xd + xy;
     }
@@ -83,6 +85,8 @@ public class Board {
 
     Board other = (Board) y;
     if (dimension() != other.dimension()) return false;
+    if (hamming()   != other.hamming())   return false;
+    if (manhattan() != other.manhattan()) return false;
 
     return true;
 
@@ -97,12 +101,34 @@ public class Board {
 
   // all neighboring boards
   public Iterable<Board> neighbors() {
-    return null;
+    int emptyX = -1;
+    int emptyY = -1;
+    for (int i = 0; i < dimension(); ++i)
+    for (int j = 0; j < dimension(); ++j) {
+      if (tiles[i][j] == 0) {
+        emptyX = i;
+        emptyY = j;
+        break;
+      }
+    }
+
+    ArrayList<Board> neighbors = new ArrayList<Board>();
+    if (emptyX > 0) neighbors.add(neighbour(emptyX, emptyY, -1,  0));
+    if (emptyX < 2) neighbors.add(neighbour(emptyX, emptyY,  1,  0));
+    if (emptyY > 0) neighbors.add(neighbour(emptyX, emptyY,  0, -1));
+    if (emptyY < 2) neighbors.add(neighbour(emptyX, emptyY,  0,  1));
+    return neighbors;
   }
 
   // a board that is obtained by exchanging any pair of tiles
   public Board twin() {
-    return null;
+    Board twinBoard = new Board(tiles);
+
+    if (tiles[0][0] == 0) twinBoard.swap(0, 1, 1, 1);
+    else if (tiles[0][1] == 0) twinBoard.swap(0, 0, 1, 0);
+    else twinBoard.swap(0, 0, 0, 1);
+
+    return twinBoard;
   }
 
   // unit testing (not graded)
@@ -112,5 +138,18 @@ public class Board {
 
   private int goalAt(int i, int j) {
     return i * n + j + 1;
+  }
+
+  private Board neighbour(int x, int y, int dx, int dy) {
+    swap(x, y, x + dx, y + dy);
+    Board board = new Board(tiles);
+    swap(x, y, x + dx, y + dy);
+    return board;
+  }
+
+  private void swap(int i, int j, int x, int y) {
+    int tmp = tiles[i][j];
+    tiles[i][j] = tiles[y][x];
+    tiles[x][y] = tmp;
   }
 }
