@@ -57,7 +57,8 @@ public class Board {
     for (int i = 0; i < dimension(); ++i)
     for (int j = 0; j < dimension(); ++j) {
       int v = tiles[i][j];
-      v = v == 0 ? n * n : v;
+      if (v == 0) continue;
+
       int x = (v - 1) / n;
       int y = (v - 1) % n;
 
