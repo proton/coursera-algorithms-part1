@@ -41,8 +41,11 @@ public class Board {
     int cnt = 0;
     for (int i = 0; i < dimension(); ++i)
     for (int j = 0; j < dimension(); ++j) {
-      if (tiles[i][j] != goalAt(i, j)) {
-        cnt++;
+      int v = tiles[i][j];
+      if (v == 0) continue;
+
+      if (v != goalAt(i, j)) {
+        ++cnt;
       }
     }
     return cnt;
