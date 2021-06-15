@@ -109,7 +109,8 @@ public class Board {
     int emptyY = -1;
     for (int i = 0; i < dimension(); ++i)
     for (int j = 0; j < dimension(); ++j) {
-      if (tiles[i][j] == 0) {
+      var v = tiles[i][j];
+      if (v == 0) {
         emptyX = i;
         emptyY = j;
         break;
@@ -118,9 +119,9 @@ public class Board {
 
     ArrayList<Board> neighbors = new ArrayList<Board>();
     if (emptyX > 0) neighbors.add(neighbour(emptyX, emptyY, -1,  0));
-    if (emptyX < 2) neighbors.add(neighbour(emptyX, emptyY,  1,  0));
+    if (emptyX < dimension() - 1) neighbors.add(neighbour(emptyX, emptyY,  1,  0));
     if (emptyY > 0) neighbors.add(neighbour(emptyX, emptyY,  0, -1));
-    if (emptyY < 2) neighbors.add(neighbour(emptyX, emptyY,  0,  1));
+    if (emptyY < dimension() - 1) neighbors.add(neighbour(emptyX, emptyY,  0,  1));
     return neighbors;
   }
 
@@ -145,9 +146,8 @@ public class Board {
   }
 
   private Board neighbour(int x, int y, int dx, int dy) {
-    swap(x, y, x + dx, y + dy);
     Board board = new Board(tiles);
-    swap(x, y, x + dx, y + dy);
+    board.swap(x, y, x + dx, y + dy);
     return board;
   }
 
