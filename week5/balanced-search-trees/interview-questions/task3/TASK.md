@@ -7,3 +7,7 @@ Design a generalized queue data type that supports all of the following operatio
 - Remove an item from the front of the queue.
 - Return the `i`th item in the queue.
 - Remove the `i`th item from the queue.
+
+### Solution
+
+Binary tree sorted by `i`.

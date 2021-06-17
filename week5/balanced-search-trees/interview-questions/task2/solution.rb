@@ -1,9 +1,14 @@
-# Design a generalized queue data type that supports all of the following operations in logarithmic time (or better) in the worst case.
+# Design an algorithm that takes a sequence of `n` document words and a sequence of `m` query words and find the shortest interval in which the `m` query words appear in the document in the order given. The length of an interval is the number of words in that interval.
 
-# - Create an empty data structure.
-# - Append an item to the end of the queue.
-# - Remove an item from the front of the queue.
-# - Return the `i`th item in the queue.
-# - Remove the `i`th item from the queue.
-
-# TODO: Implement
+def algorithm(document_words, query_words)
+  next_word = query_words.shift
+  start_i = nil
+  document_words.each_with_index do |word, i|
+    if word == next_word
+      start_i = i if start_i.nil?
+      next_word = query_words.shift
+      return i - start_i if next_word.nil?
+    end
+  end
+  return nil
+end
