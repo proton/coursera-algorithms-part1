@@ -47,7 +47,7 @@ public class PointSET {
     Point2D nearest = null;
     double minDistance = Double.POSITIVE_INFINITY;
     for (Point2D point : tree) {
-      double distance = p.distanceTo(point);
+      double distance = p.distanceSquaredTo(point);
       if (distance < minDistance) {
         nearest = point;
         minDistance = distance;
