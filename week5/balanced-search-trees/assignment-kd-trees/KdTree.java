@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+
 import edu.princeton.cs.algs4.Point2D;
 import edu.princeton.cs.algs4.RectHV;
 
@@ -172,40 +173,48 @@ public class KdTree {
       }
     }
   }
-  // // a nearest neighbor in the set to point p; null if the set is empty
+
+  // a nearest neighbor in the set to point p; null if the set is empty
   public Point2D nearest(Point2D p) {
     if (p == null) throw new IllegalArgumentException("nearest method called with a null argument");
-    return nearestSearch(p, this.root, null, Double.POSITIVE_INFINITY);
+    return nearestSearch(this.root, p, null, Double.POSITIVE_INFINITY);
   }
 
-  private Point2D nearestSearch(Point2D p, Node node, Point2D nearest, double minDistance) {
-    if (node == null) return nearest;
+  private Point2D nearestSearch(Node node, Point2D target, Point2D nearestPoint, double nearestDistance) {
+    if (node == null) return null;
 
-    double distance = p.distanceSquaredTo(node.point);
-    if (distance < minDistance) {
-      nearest = node.point;
-      minDistance = distance;
+    double distance = node.point.distanceSquaredTo(target);
+    if (distance < nearestDistance) {
+      nearestPoint = node.point;
+      nearestDistance = distance;
     }
 
+    Node first, second;
     if (node.isVertical) {
-      if (p.x() < node.point.x()) {
-        nearest = nearestSearch(p, node.left, nearest, minDistance);
-        nearest = nearestSearch(p, node.right, nearest, nearest.distanceSquaredTo(p));
+      if (target.x() < node.point.x()) {
+        first = node.left;
+        second = node.right;
       } else {
-        nearest = nearestSearch(p, node.right, nearest, minDistance);
-        nearest = nearestSearch(p, node.left, nearest, nearest.distanceSquaredTo(p));
+        first = node.right;
+        second = node.left;
       }
     } else {
-      if (p.y() < node.point.y()) {
-        nearest = nearestSearch(p, node.left, nearest, minDistance);
-        nearest = nearestSearch(p, node.right, nearest, nearest.distanceSquaredTo(p));
+      if (target.y() < node.point.y()) {
+        first = node.left;
+        second = node.right;
       } else {
-        nearest = nearestSearch(p, node.right, nearest, minDistance);
-        nearest = nearestSearch(p, node.left, nearest, nearest.distanceSquaredTo(p));
+        first = node.right;
+        second = node.left;
       }
     }
 
-    return nearest;
+    nearestPoint = nearestSearch(first, target, nearestPoint, nearestDistance);
+
+    if (second != null && second.point.distanceSquaredTo(target) < nearestDistance) {
+      nearestPoint = nearestSearch(second, target, nearestPoint, nearestDistance);
+    }
+
+    return nearestPoint;
   }
 
   // unit testing of the methods (optional)
